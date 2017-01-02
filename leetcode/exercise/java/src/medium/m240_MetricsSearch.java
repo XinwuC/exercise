@@ -16,8 +16,13 @@ import java.util.concurrent.TimeUnit;
  * 
  * Consider the following matrix:
  * 
- * [ [1, 4, 7, 11, 15], [2, 5, 8, 12, 19], [3, 6, 9, 16, 22], [10, 13, 14, 17,
- * 24], [18, 21, 23, 26, 30] ]
+ * <code>
+ * [ [1, 4, 7, 11, 15], 
+ *   [2, 5, 8, 12, 19], 
+ *   [3, 6, 9, 16, 22], 
+ *   [10, 13, 14, 17, 24], 
+ *   [18, 21, 23, 26, 30] ]
+ * </code>
  * 
  * Given target = 5, return true.
  * 
@@ -34,15 +39,18 @@ public class m240_MetricsSearch {
 	}
 
 	private boolean searchMatrix(int[][] matrix, int target, int startRow, int endRow, int startCol, int endCol) {
-		if (null == matrix || startRow<0 || startCol<0 || 
-				endRow < startRow || endCol < startCol || 
-				endRow >= matrix.length || endCol >= matrix[0].length) return false;
+		if (null == matrix || startRow < 0 || startCol < 0 || endRow < startRow || endCol < startCol
+				|| endRow >= matrix.length || endCol >= matrix[0].length)
+			return false;
 		// 1x1
-		else if (endRow == startRow && endCol == startCol) return matrix[startRow][startCol] == target;
+		else if (endRow == startRow && endCol == startCol)
+			return matrix[startRow][startCol] == target;
 		// 1x2
-		else if (endRow == startRow && endCol == startCol+1) return matrix[startRow][startCol] == target || matrix[startRow][endCol] == target;
-		// 2x1 
-		else if (endRow == startRow+1 && endCol == startCol) return matrix[startRow][startCol] == target || matrix[endRow][startCol] == target;
+		else if (endRow == startRow && endCol == startCol + 1)
+			return matrix[startRow][startCol] == target || matrix[startRow][endCol] == target;
+		// 2x1
+		else if (endRow == startRow + 1 && endCol == startCol)
+			return matrix[startRow][startCol] == target || matrix[endRow][startCol] == target;
 		// 2x2
 		else if (startRow + 1 == endRow && startCol + 1 == endCol)
 			return matrix[startRow][startCol] == target ? true
@@ -62,19 +70,20 @@ public class m240_MetricsSearch {
 			found = searchMatrix(matrix, target, midRow, endRow, midCol, endCol);
 		} else
 			found = searchMatrix(matrix, target, startRow, midRow, startCol, midCol);
-		
-		return found ? true : searchMatrix(matrix, target, midRow+1, endRow, startCol, midCol-1) ||
-				searchMatrix(matrix, target, startRow, midRow-1, midCol+1, endCol);
+
+		return found ? true
+				: searchMatrix(matrix, target, midRow + 1, endRow, startCol, midCol - 1)
+						|| searchMatrix(matrix, target, startRow, midRow - 1, midCol + 1, endCol);
 	}
 
 	public static void main(String[] args) {
-		int[][] matrix = new int[][] { {-1}, {-1}};
-//			{ 1, 4, 7, 11, 15, 17 }, 
-//			{ 2, 5, 8, 12, 19, 23 }, 
-//			{ 3, 6, 9, 16, 22, 34 },
-//			{ 10, 13, 14, 17, 24, 47 }, 
-//			{ 18, 21, 23, 26, 30, 58 }, 
-//		};
+		int[][] matrix = new int[][] { { -1 }, { -1 } };
+		// { 1, 4, 7, 11, 15, 17 },
+		// { 2, 5, 8, 12, 19, 23 },
+		// { 3, 6, 9, 16, 22, 34 },
+		// { 10, 13, 14, 17, 24, 47 },
+		// { 18, 21, 23, 26, 30, 58 },
+		// };
 
 		m240_MetricsSearch search = new m240_MetricsSearch();
 
@@ -91,19 +100,16 @@ public class m240_MetricsSearch {
 		end = System.currentTimeMillis();
 		System.out.println(
 				"Search " + target + " is " + result + "\t - " + TimeUnit.MILLISECONDS.toSeconds(end - start) + "ms");
-		
+
 		System.out.println("Search 58 is " + search.searchMatrix(matrix, 58));
 		System.out.println("Search 17 is " + search.searchMatrix(matrix, 17));
 		System.out.println("Search 18 is " + search.searchMatrix(matrix, 18));
 		System.out.println("Search 1 is " + search.searchMatrix(matrix, 1));
 		System.out.println("Search 3 is " + search.searchMatrix(matrix, 3));
-		
+
 		System.out.println("Search -1 is " + search.searchMatrix(matrix, -1));
 		System.out.println("Search 20 is " + search.searchMatrix(matrix, 20));
 		System.out.println("Search 100 is " + search.searchMatrix(matrix, 100));
-
-
-
 
 	}
 

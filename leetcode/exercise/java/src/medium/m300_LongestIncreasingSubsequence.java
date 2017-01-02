@@ -44,7 +44,7 @@ public class m300_LongestIncreasingSubsequence {
 			} else if (minLast[i - 1] > nums[i]) {
 				maxLen[i] = maxLen[i - 1];
 				if (minLast[i - 1] > nums[i] && minSecondLast[i - 1] < nums[i]) {
-					minLast[i] = nums[i];
+					minLast[i] = nums[i];	
 				} else {
 					minLast[i] = minLast[i - 1];
 				}

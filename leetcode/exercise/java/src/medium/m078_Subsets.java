@@ -22,40 +22,46 @@ import java.util.stream.IntStream;
  * 
  * [ [3], [1], [2], [1,2,3], [1,3], [2,3], [1,2], [] ]
  * 
- * Reference: 1. Heap's algorithm:
- * http://comjnl.oxfordjournals.org/content/6/3/293.full.pdf 2. Wiki pseudo
- * code: https://en.wikipedia.org/wiki/Heap%27s_algorithm 3. algorithm
- * explanation: http://blog.csdn.net/masibuaa/article/details/8171082
+ * Reference:
+ * 
+ * 1. Heap's algorithm:
+ * http://comjnl.oxfordjournals.org/content/6/3/293.full.pdf
+ * 
+ * 2. Wiki pseudo code: https://en.wikipedia.org/wiki/Heap%27s_algorithm
+ * 
+ * 3. algorithm explanation:
+ * http://blog.csdn.net/masibuaa/article/details/8171082
  */
 public class m078_Subsets {
-	
+
 	public List<List<Integer>> subsets(int[] nums) {
 		List<List<Integer>> solution = new ArrayList<List<Integer>>();
 		solution.add(new ArrayList<Integer>());
-		
+
 		// empty set
-		if (null == nums || 0 == nums.length) return solution;
-		
+		if (null == nums || 0 == nums.length)
+			return solution;
+
 		List<Integer> numList = IntStream.of(nums).boxed().collect(Collectors.toList());
 		Collections.sort(numList);
 
 		// number of combinations
-		int size = (int)Math.pow(2, numList.size());
-		
-		for (int combo=1; combo<size; ++combo) {
+		int size = (int) Math.pow(2, numList.size());
+
+		for (int combo = 1; combo < size; ++combo) {
 			List<Integer> subset = new ArrayList<Integer>();
-			for (int mask = 1; mask <= combo; mask <<=1 ) {
+			for (int mask = 1; mask <= combo; mask <<= 1) {
 				if ((mask & combo) != 0) {
-					int idx = (int) (Math.log(mask)/Math.log(2));
+					int idx = (int) (Math.log(mask) / Math.log(2));
 					subset.add(numList.get(idx));
 				}
 			}
 			solution.add(subset);
 		}
-	
+
 		return solution;
 	}
-	
+
 	private void printSolution(List<List<Integer>> solution) {
 		for (List<Integer> subset : solution) {
 			System.out.print("\t[");
@@ -65,17 +71,17 @@ public class m078_Subsets {
 			System.out.println("],");
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		m078_Subsets target = new m078_Subsets();
 
 		int[] nums = { 1, 2, 3, 4 };
 		List<List<Integer>> solution = target.subsets(nums);
 		target.printSolution(solution);
-		
+
 		int[] nums2 = { -1, 2, -3, 4, -100, 12043, -453 };
 		target.printSolution(target.subsets(nums2));
-		
+
 	}
 
 	class Permutation {
