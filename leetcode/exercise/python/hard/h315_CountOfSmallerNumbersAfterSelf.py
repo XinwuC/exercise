@@ -1,6 +1,5 @@
 '''
  315. Count of Smaller Numbers After Self
-Description Submission Solutions
 
     Total Accepted: 28018
     Total Submissions: 82765
