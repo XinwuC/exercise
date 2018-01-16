@@ -38,6 +38,7 @@ valid_labels = None
 # solve problems 1 - 6
 ###############################################################
 def run_problem_1():
+    print('[1] Display training/validation/test images from files.')
     # display training images
     _run_problem_1_display(train_folders, 'Training image samples from: %s' % os.path.dirname(train_folders[0]))
     # display test images
@@ -63,6 +64,7 @@ def _run_problem_1_display(data_folders, title, columns=2):
 
 
 def run_problem_2():
+    print('[2] Display training/validation/test images and labels from ndarray.')
     _run_problem_2_display(train_dataset, train_labels, 'Training data set & Labels')
     _run_problem_2_display(valid_dataset, valid_labels, 'Validation data set & Labels')
     _run_problem_2_display(test_dataset, test_labels, 'Test data set & Labels')
@@ -86,19 +88,113 @@ def _run_problem_2_display(dataset, labels, title, sample_size=10, columns=2):
 
 
 def run_problem_3():
-    pass
+    '''
+    Another check: we expect the data to be balanced across classes. Verify that.
+
+    :return: na
+    '''
+    print('[3] Validate data balance across classes.')
+    full_dataset = np.concatenate((train_dataset, valid_dataset, test_dataset))
+    print('Full data set tensor: ', full_dataset.shape)
+    print('Mean: ', np.mean(full_dataset))
+    print('Standard deviation: ', np.std(full_dataset))
 
 
 def run_problem_4():
-    pass
+    '''
+    Convince yourself that the data is still good after shuffling!
+
+    :return: na
+    '''
+    print('[4] Validate training/validation/test data balance after shuffle.')
+    _run_problem_4_validate(train_dataset, 'training')
+    _run_problem_4_validate(valid_dataset, 'validation')
+    _run_problem_4_validate(test_dataset, 'test')
+
+
+def _run_problem_4_validate(dataset, dataset_name):
+    print('%s data set tensor: ' % dataset_name, dataset.shape)
+    print('\tMean: ', np.mean(dataset))
+    print('\tStandard deviation: ', np.std(dataset))
 
 
 def run_problem_5():
-    pass
+    '''
+    Measure how much overlap there is between training, validation and test samples.
+
+    :return: na
+    '''
+    print('[5] Measure how much overlap there is between training, validation and test samples.')
+    # check dups within datasets
+    dups = _run_problem_5_dups_self(test_dataset, test_labels)
+    print('\t{0:d} ({1:.2%}) dups within test data sets.'.format(dups, dups / len(test_labels)))
+    dups = _run_problem_5_dups_self(valid_dataset, valid_labels)
+    print('\t{0:d} ({1:.2%}) dups within test data sets.'.format(dups, dups / len(valid_labels)))
+    dups = _run_problem_5_dups_self(train_dataset, train_labels)
+    print('\t{0:d} ({1:.2%}) dups within test data sets.'.format(dups, dups / len(train_labels)))
+    # check dups between datasets
+    dups = _run_problem_5_dups_between(test_dataset, test_labels, valid_dataset, valid_labels)
+    print('\t{0:d} ({1:.2%}) dups between test and validate data sets.'.format(dups, dups / len(test_labels)))
+    dups = _run_problem_5_dups_between(test_dataset, test_labels, train_dataset, train_labels)
+    print('\t{0:d} ({1:.2%}) dups between test and training data sets.'.format(dups, dups / len(test_labels)))
+    dups = _run_problem_5_dups_between(valid_dataset, valid_labels, train_dataset, train_labels)
+    print('\t{0:d} ({1:.2%}) dups between validate and training data sets.'.format(dups, dups / len(valid_dataset)))
+
+
+def _run_problem_5_dups_self(dataset, labels):
+    dup_count = 0
+    for labels, index in _build_label_index(labels).items():
+        while index:
+            dups = [index[0]]
+            for i in range(1, len(index)):
+                if np.array_equal(dataset[index[0]], dataset[index[i]]):
+                    dups.append(index[i])
+            if len(dups) > 1:
+                dup_count += 1
+            for dup in dups:
+                index.remove(dup)
+    return dup_count
+
+
+def _run_problem_5_dups_between(left_dataset, left_labels, right_dataset, right_labels):
+    '''
+
+    :param left_dataset: smaller dataset
+    :param left_labels:
+    :param right_dataset: larger dataset
+    :param right_labels:
+    :return:
+    '''
+    left_index = _build_label_index(left_labels)
+    right_index = _build_label_index(right_labels)
+    dup_count = 0
+    for label, left_imgs in left_index.items():
+        right_imgs = right_index[label]
+        for left_img in left_imgs:
+            for right_img in right_imgs:
+                if np.array_equal(left_dataset[left_img], right_dataset[right_img]):
+                    dup_count += 1
+                    break
+    return dup_count
+
+
+def _build_label_index(labels):
+    label_index = {}
+    for index in range(len(labels)):
+        if labels[index] not in label_index.keys():
+            label_index[labels[index]] = [index]
+        else:
+            label_index[labels[index]].append(index)
+    return label_index
 
 
 def run_problem_6():
-    pass
+    '''
+    Use the LogisticRegression model from sklearn.linear_model.
+
+    :return:
+    '''
+    model = LogisticRegression(C=1e5)
 
 
 ###############################################################
