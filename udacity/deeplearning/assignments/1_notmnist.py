@@ -88,11 +88,11 @@ def _run_problem_2_display(dataset, labels, title, sample_size=10, columns=2):
 
 
 def run_problem_3():
-    '''
+    """
     Another check: we expect the data to be balanced across classes. Verify that.
 
     :return: na
-    '''
+    """
     print('[3] Validate data balance across classes.')
     full_dataset = np.concatenate((train_dataset, valid_dataset, test_dataset))
     print('Full data set tensor: ', full_dataset.shape)
@@ -101,11 +101,11 @@ def run_problem_3():
 
 
 def run_problem_4():
-    '''
+    """
     Convince yourself that the data is still good after shuffling!
 
     :return: na
-    '''
+    """
     print('[4] Validate training/validation/test data balance after shuffle.')
     _run_problem_4_validate(train_dataset, 'training')
     _run_problem_4_validate(valid_dataset, 'validation')
@@ -119,11 +119,11 @@ def _run_problem_4_validate(dataset, dataset_name):
 
 
 def run_problem_5():
-    '''
+    """
     Measure how much overlap there is between training, validation and test samples.
 
     :return: na
-    '''
+    """
     print('[5] Measure how much overlap there is between training, validation and test samples.')
     # check dups within datasets
     dups = _run_problem_5_dups_self(test_dataset, test_labels)
@@ -157,14 +157,14 @@ def _run_problem_5_dups_self(dataset, labels):
 
 
 def _run_problem_5_dups_between(left_dataset, left_labels, right_dataset, right_labels):
-    '''
+    """
 
     :param left_dataset: smaller dataset
     :param left_labels:
     :param right_dataset: larger dataset
     :param right_labels:
     :return:
-    '''
+    """
     left_index = _build_label_index(left_labels)
     right_index = _build_label_index(right_labels)
     dup_count = 0
@@ -188,13 +188,72 @@ def _build_label_index(labels):
     return label_index
 
 
-def run_problem_6():
-    '''
+def run_problem_6(force=False):
+    """
     Use the LogisticRegression model from sklearn.linear_model.
 
     :return:
-    '''
-    model = LogisticRegression(C=1e5)
+    """
+    print('[6] Use Multinomial Logistic Regression to learn and predict.')
+
+    model = None
+    model_file = os.path.join(data_root, 'assignment_1_model.pickle')
+    if force or not os.path.exists(model_file):
+        train_set = train_dataset.reshape(train_dataset.shape[0], image_size * image_size)
+        model = LogisticRegression(C=1e5, multi_class='multinomial', solver='newton-cg')
+        model.fit(train_set, train_labels)
+        try:
+            with open(model_file, 'wb') as f:
+                pickle.dump(model, f)
+        except Exception as e:
+            print('Unable to save model to', model_file, ':', e)
+    else:
+        try:
+            with open(model_file, 'rb') as f:
+                model = pickle.load(f)
+        except Exception as e:
+            print('Unable to load model from', model_file, ':', e)
+            return
+
+    test_set = test_dataset.reshape(test_dataset.shape[0], image_size * image_size)
+    sparsity = np.mean(model.coef_ == 0) * 100
+    score = model.score(test_set, test_labels)
+    print("Sparsity with L1 penalty: %.2f%%" % sparsity)
+    print("Test score with L1 penalty: %.4f" % score)
+    _run_problem_6_display(model)
+
+
+def _run_problem_6_analyze_model(model):
+    coef = model.coef_.copy()
+    plt.figure(figsize=(10, 5))
+    scale = np.abs(coef).max()
+    for i in range(10):
+        l1_plot = plt.subplot(2, 5, i + 1)
+        l1_plot.imshow(coef[i].reshape(28, 28), interpolation='nearest',
+                       cmap=plt.cm.RdBu, vmin=-scale, vmax=scale)
+        l1_plot.set_xticks(())
+        l1_plot.set_yticks(())
+        l1_plot.set_xlabel('Class %i' % i)
+    plt.suptitle('Classification vector for...')
+    plt.show()
+
+
+def _run_problem_6_display(model, test_size=10):
+    fig = plt.figure(figsize=(image_size, image_size))
+    plt.gcf().canvas.set_window_title('Deep Learning Assignment 1 problem 6 @ Udacity')
+    fig.suptitle('prediction v.s. label')
+    fig.subplots_adjust(hspace=0.5)
+
+    columns = 2
+    rows = math.ceil(test_size / columns)
+    img_pos = 1
+    for index in random.sample(range(len(test_labels)), test_size):
+        subplot = fig.add_subplot(rows, columns, img_pos)
+        predict = model.predict([test_dataset[index].reshape(image_size * image_size)])[0]
+        subplot.set_title('Label %s v.s. Predict %s' % (chr(ord('A') + test_labels[index]), chr(ord('A') + predict)))
+        plt.imshow(test_dataset[index])
+        img_pos += 1
+    plt.show()
 
 
 ###############################################################
