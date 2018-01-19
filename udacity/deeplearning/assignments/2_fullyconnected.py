@@ -194,7 +194,7 @@ def tf_logistic_regression_with_stochastic_gradient_descent(epochs=3001, batch_s
         display_sample_prediction(test_prediction_eval, test_labels, acc)
 
 
-def run_problem_1_with_leru(epochs=3001, batch_size=128, hidden_nodes=2048):
+def run_problem_1_with_leru(epochs=3001, batch_size=128, hidden_nodes=1024):
     log_folder = os.path.join(data_root, 'assignment2', 'lr3')
     graph = tf.Graph()
     with graph.as_default():
@@ -255,9 +255,34 @@ def run_problem_1_with_leru(epochs=3001, batch_size=128, hidden_nodes=2048):
         display_sample_prediction(test_prediction_eval, test_labels, acc)
 
 
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.losses import categorical_crossentropy
+from keras.optimizers import SGD
+from keras.callbacks import TensorBoard
+
+
+def run_problem_1_with_keras(epochs=9, batch_size=128, hidden_nodes=1024):
+    log_folder = os.path.join(data_root, 'assignment2', 'keras')
+    model = Sequential()
+    model.add(Dense(units=hidden_nodes, activation='relu', input_dim=image_size * image_size))
+    model.add(Dense(units=num_labels, activation='softmax'))
+    model.compile(loss=categorical_crossentropy, metrics=['accuracy'],
+                  optimizer=SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True))
+    model.fit(train_dataset, train_labels, epochs=epochs, batch_size=batch_size, verbose=False,
+              callbacks=[TensorBoard(log_folder)])
+    print("Validate accuracy: %.1f%%" % (model.evaluate(valid_dataset, valid_labels, verbose=False)[1] * 100))
+    acc = 100 * model.evaluate(test_dataset, test_labels, verbose=False)[1]
+    print("Test accuracy: %.1f%%" % acc)
+    predictions = model.predict(test_dataset, verbose=False)
+    display_sample_prediction(predictions, test_labels, acc)
+    pass
+
+
 if __name__ == '__main__':
     load_datasets()
 
-    # tf_logistic_regression_with_simple_gradient_descent()
-    # tf_logistic_regression_with_stochastic_gradient_descent()
+    tf_logistic_regression_with_simple_gradient_descent()
+    tf_logistic_regression_with_stochastic_gradient_descent()
     run_problem_1_with_leru()
+    run_problem_1_with_keras()
