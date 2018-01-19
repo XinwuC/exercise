@@ -3,7 +3,12 @@
 # These are all the modules we'll be using later. Make sure you can import them
 # before proceeding further.
 from __future__ import print_function
+
+import math
 import os
+import random
+
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from six.moves import cPickle as pickle
@@ -33,6 +38,7 @@ def load_datasets():
         test_dataset = save['test_dataset']
         test_labels = save['test_labels']
         del save  # hint to help gc free up memory
+    # reformat datasets and labels for tensorflow
     train_dataset, train_labels = reformat(train_dataset, train_labels)
     valid_dataset, valid_labels = reformat(valid_dataset, valid_labels)
     test_dataset, test_labels = reformat(test_dataset, test_labels)
@@ -49,11 +55,31 @@ def reformat(dataset, labels):
 
 
 def accuracy(predictions, labels):
-    return (100.0 * np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1))
-            / predictions.shape[0])
+    return (100.0 * np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1)) / predictions.shape[0])
+
+
+def display_sample_prediction(predictions, labels, accuracy, sample_size=10, columns=2):
+    predictions = np.argmax(predictions, 1)
+    labels = np.argmax(labels, 1)
+    sample_index = [i for i in random.sample(range(len(labels)), sample_size)]
+
+    fig = plt.figure(figsize=(image_size, image_size))
+    plt.gcf().canvas.set_window_title('Deep Learning Assignment 2 @ Udacity')
+    fig.suptitle('prediction v.s. label (%.1f%%)' % accuracy)
+    fig.subplots_adjust(hspace=0.5)
+    rows = math.ceil(sample_size / columns)
+    img_pos = 1
+    for index in sample_index:
+        subplot = fig.add_subplot(rows, columns, img_pos)
+        subplot.set_title('Label %s v.s. Predict %s' % (chr(ord('A') + labels[index]),
+                                                        chr(ord('A') + predictions[index])))
+        plt.imshow(test_dataset[index].reshape(image_size, image_size))
+        img_pos += 1
+    plt.show()
 
 
 def tf_logistic_regression_with_simple_gradient_descent(epochs=801, train_subset=10000):
+    log_folder = os.path.join(data_root, 'assignment2', 'lr1')
     graph = tf.Graph()
     with graph.as_default():
         # Input data.
@@ -96,6 +122,7 @@ def tf_logistic_regression_with_simple_gradient_descent(epochs=801, train_subset
         # biases.
         tf.global_variables_initializer().run()
         print('Initialized')
+        tf.summary.FileWriter(log_folder, session.graph)
         for step in range(epochs):
             # Run the computations. We tell .run() that we want to run the optimizer,
             # and get the loss value and the training predictions returned as numpy
@@ -108,26 +135,30 @@ def tf_logistic_regression_with_simple_gradient_descent(epochs=801, train_subset
                 # just to get that one numpy array. Note that it recomputes all its graph
                 # dependencies.
                 print('\tValidation accuracy: %.1f%%' % accuracy(valid_prediction.eval(), valid_labels))
-        print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
+        test_prediction_eval = test_prediction.eval()
+        acc = accuracy(test_prediction_eval, test_labels)
+        print("Test accuracy: %.1f%%" % acc)
+        display_sample_prediction(test_prediction_eval, test_labels, acc)
 
 
 def tf_logistic_regression_with_stochastic_gradient_descent(epochs=3001, batch_size=128):
+    log_folder = os.path.join(data_root, 'assignment2', 'lr2')
     graph = tf.Graph()
     with graph.as_default():
         # Input data. For the training data, we use a placeholder that will be fed
         # at run time with a training minibatch.
-        tf_train_dataset = tf.placeholder(tf.float32, shape=(batch_size, image_size * image_size))
-        tf_train_labels = tf.placeholder(tf.float32, shape=(batch_size, num_labels))
-        tf_valid_dataset = tf.constant(valid_dataset)
-        tf_test_dataset = tf.constant(test_dataset)
+        tf_train_dataset = tf.placeholder(tf.float32, shape=(batch_size, image_size * image_size), name='train_data')
+        tf_train_labels = tf.placeholder(tf.float32, shape=(batch_size, num_labels), name='train_labels')
+        tf_valid_dataset = tf.constant(valid_dataset, name='valid_data')
+        tf_test_dataset = tf.constant(test_dataset, name='test_data')
 
         # Variables.
-        weights = tf.Variable(tf.truncated_normal([image_size * image_size, num_labels]))
-        biases = tf.Variable(tf.zeros([num_labels]))
+        weights = tf.Variable(tf.truncated_normal([image_size * image_size, num_labels]), name='weights')
+        biases = tf.Variable(tf.zeros([num_labels]), name='biases')
 
         # Training computation.
-        logits = tf.matmul(tf_train_dataset, weights) + biases
-        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=tf_train_labels, logits=logits))
+        logits = tf.add(tf.matmul(tf_train_dataset, weights), biases, name='logits')
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=tf_train_labels, logits=logits, name='sm'))
 
         # Optimizer.
         optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
@@ -140,6 +171,7 @@ def tf_logistic_regression_with_stochastic_gradient_descent(epochs=3001, batch_s
     with tf.Session(graph=graph) as session:
         tf.global_variables_initializer().run()
         print("Initialized")
+        tf.summary.FileWriter(log_folder, session.graph)
         for step in range(epochs):
             # Pick an offset within the training data, which has been randomized.
             # Note: we could use better randomization across epochs.
@@ -156,16 +188,76 @@ def tf_logistic_regression_with_stochastic_gradient_descent(epochs=3001, batch_s
                 print("Minibatch loss at step %d: %f" % (step, l))
                 print("Minibatch accuracy: %.1f%%" % accuracy(predictions, batch_labels))
                 print("\tValidation accuracy: %.1f%%" % accuracy(valid_prediction.eval(), valid_labels))
-        print("Test accuracy: %.1f%%" % accuracy(test_prediction.eval(), test_labels))
+        test_prediction_eval = test_prediction.eval()
+        acc = accuracy(test_prediction_eval, test_labels)
+        print("Test accuracy: %.1f%%" % acc)
+        display_sample_prediction(test_prediction_eval, test_labels, acc)
 
 
-def run_problem_1_with_leru(hidden_nodes=1024):
-    pass
+def run_problem_1_with_leru(epochs=3001, batch_size=128, hidden_nodes=2048):
+    log_folder = os.path.join(data_root, 'assignment2', 'lr3')
+    graph = tf.Graph()
+    with graph.as_default():
+        # Input data. For the training data, we use a placeholder that will be fed
+        # at run time with a training minibatch.
+        tf_train_dataset = tf.placeholder(tf.float32, shape=(batch_size, image_size * image_size), name='train_data')
+        tf_train_labels = tf.placeholder(tf.float32, shape=(batch_size, num_labels), name='train_label')
+        tf_valid_dataset = tf.constant(valid_dataset, name='valid_data')
+        tf_test_dataset = tf.constant(test_dataset, name='test_data')
+
+        # Variables.
+        weights_0 = tf.Variable(tf.truncated_normal([image_size * image_size, hidden_nodes]), name='input_weights')
+        biases_0 = tf.Variable(tf.zeros([hidden_nodes]), name='input_biases')
+
+        weights_1 = tf.Variable(tf.truncated_normal([hidden_nodes, num_labels]), name='relu_weights')
+        biases_1 = tf.Variable(tf.zeros([num_labels]), name='relu_biases')
+
+        # Training computation.
+        logits_0 = tf.add(tf.matmul(tf_train_dataset, weights_0), biases_0, name='logits_0')
+        relu = tf.nn.relu(logits_0, name='relu')
+        logits_1 = tf.add(tf.matmul(relu, weights_1), biases_1, name='logits_1')
+        loss = tf.reduce_mean(
+            tf.nn.softmax_cross_entropy_with_logits(labels=tf_train_labels, logits=logits_1, name='lsm'))
+
+        # Optimizer.
+        optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
+
+        # Predictions for the training, validation, and test data.
+        train_prediction = tf.nn.softmax(logits_1)
+        valid_prediction = tf.nn.softmax(
+            tf.matmul(tf.nn.relu(tf.matmul(valid_dataset, weights_0) + biases_0), weights_1) + biases_1)
+        test_prediction = tf.nn.softmax(
+            tf.matmul(tf.nn.relu(tf.matmul(tf_test_dataset, weights_0) + biases_0), weights_1) + biases_1)
+
+    with tf.Session(graph=graph) as session:
+        tf.global_variables_initializer().run()
+        print("Initialized")
+        tf.summary.FileWriter(log_folder, session.graph)
+        for step in range(epochs):
+            # Pick an offset within the training data, which has been randomized.
+            # Note: we could use better randomization across epochs.
+            offset = (step * batch_size) % (train_labels.shape[0] - batch_size)
+            # Generate a minibatch.
+            batch_data = train_dataset[offset:(offset + batch_size), :]
+            batch_labels = train_labels[offset:(offset + batch_size), :]
+            # Prepare a dictionary telling the session where to feed the minibatch.
+            # The key of the dictionary is the placeholder node of the graph to be fed,
+            # and the value is the numpy array to feed to it.
+            feed_dict = {tf_train_dataset: batch_data, tf_train_labels: batch_labels}
+            _, l, predictions = session.run([optimizer, loss, train_prediction], feed_dict=feed_dict)
+            if step % 500 == 0:
+                print("Minibatch loss at step %d: %f" % (step, l))
+                print("Minibatch accuracy: %.1f%%" % accuracy(predictions, batch_labels))
+                print("\tValidation accuracy: %.1f%%" % accuracy(valid_prediction.eval(), valid_labels))
+        test_prediction_eval = test_prediction.eval()
+        acc = accuracy(test_prediction_eval, test_labels)
+        print("Test accuracy: %.1f%%" % acc)
+        display_sample_prediction(test_prediction_eval, test_labels, acc)
 
 
 if __name__ == '__main__':
     load_datasets()
 
-    tf_logistic_regression_with_simple_gradient_descent()
-    tf_logistic_regression_with_stochastic_gradient_descent()
+    # tf_logistic_regression_with_simple_gradient_descent()
+    # tf_logistic_regression_with_stochastic_gradient_descent()
     run_problem_1_with_leru()

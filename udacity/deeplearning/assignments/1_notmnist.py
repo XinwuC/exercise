@@ -3,18 +3,20 @@
 # These are all the modules we'll be using later. Make sure you can import them
 # before proceeding further.
 from __future__ import print_function
-import imageio
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import numpy as np
-import random
+
+import math
 import os
+import random
 import sys
 import tarfile
-import math
-from sklearn.linear_model import LogisticRegression
-from six.moves.urllib.request import urlretrieve
+
+import imageio
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+import numpy as np
 from six.moves import cPickle as pickle
+from six.moves.urllib.request import urlretrieve
+from sklearn.linear_model import LogisticRegression
 
 # global variables
 url = 'https://commondatastorage.googleapis.com/books1000/'
