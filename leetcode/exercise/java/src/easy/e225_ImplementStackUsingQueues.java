@@ -38,7 +38,7 @@ public class e225_ImplementStackUsingQueues {
 
 	// Push element x onto stack.
 	public void push(int x) {
-		_queue.offer(new Integer(x));
+		_queue.offer(x);
 		for (int i = 0; i < _queue.size() - 1; ++i) {
 			_queue.offer(_queue.poll());
 		}

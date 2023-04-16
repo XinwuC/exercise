@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Find the nth digit of the infinite integer sequence 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...
+ * Find the nth digit of the infinite integer sequence 1, 2, 3, 4, 5, 6, 7, 8,
+ * 9, 10, 11, ...
  * <p>
  * Note:
- * n is positive and will fit within the range of a 32-bit signed integer (n < 231).
+ * n is positive and will fit within the range of a 32-bit signed integer (n <
+ * 231).
  * <p>
  * Example 1:
  * <p>
@@ -25,19 +27,19 @@ import java.util.ArrayList;
  * 0
  * <p>
  * Explanation:
- * The 11th digit of the sequence 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ... is a 0, which is part of the number 10.
+ * The 11th digit of the sequence 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ... is a 0,
+ * which is part of the number 10.
  */
 public class e400_NthDigit {
     boolean init = false;
     int[] index = null;
-    private int position;
 
     /**
      * build position index
-     * index:     0,       1,         2, ...
+     * index: 0, 1, 2, ...
      * range: [0,9], [10,99], [100,999], ...
-     * length:    1,       2,         3, ...
-     * value:   9*1,    90*2,     900*3, ...
+     * length: 1, 2, 3, ...
+     * value: 9*1, 90*2, 900*3, ...
      */
     private void buildIndex() {
         if (!init) {
@@ -51,7 +53,7 @@ public class e400_NthDigit {
                     indexList.add(Integer.MAX_VALUE);
                     break;
                 } else {
-                    indexList.add(new Integer((int) totalDigits));
+                    indexList.add((int) totalDigits);
                 }
             }
             index = new int[indexList.size()];
@@ -65,10 +67,10 @@ public class e400_NthDigit {
      * Look up from position index array
      * <p>
      * example: in range [100, 999]
-     * int:                 1 0 0, 1 0 1, 1 0 2, ...
-     * position:            1 2 3  4 5 6  7 8 9
-     * ceil(x/length):      1 1 1  2 2 2  3 3 3
-     * x%length - 1:        0 1 -1 0 1 -1 0 1 -1
+     * int: 1 0 0, 1 0 1, 1 0 2, ...
+     * position: 1 2 3 4 5 6 7 8 9
+     * ceil(x/length): 1 1 1 2 2 2 3 3 3
+     * x%length - 1: 0 1 -1 0 1 -1 0 1 -1
      */
     public int findNthDigit(int n) {
         buildIndex();
@@ -107,7 +109,9 @@ public class e400_NthDigit {
         String valueString = String.valueOf(value);
         char c = valueString.charAt(position);
 
-        System.out.println(String.format("%dth digit is %s, [length: %d, range_start: %d, range_index: %d, int: %d, position: %d]", n, c, length, range_start, range_index, value, position));
+        System.out.println(
+                String.format("%dth digit is %s, [length: %d, range_start: %d, range_index: %d, int: %d, position: %d]",
+                        n, c, length, range_start, range_index, value, position));
 
         return c - '0';
 

@@ -2,10 +2,10 @@ package easy;
 
 import basic.ListNode;
 
-import java.util.List;
-
 /**
  * Reverse a singly linked list.
+ * https://leetcode.com/problems/reverse-linked-list/description/
+ * 
  */
 public class e206_ReverseLinkedList {
     public ListNode reverseList(ListNode head) {

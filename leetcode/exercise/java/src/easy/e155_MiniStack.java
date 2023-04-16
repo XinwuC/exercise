@@ -11,7 +11,8 @@ import java.util.ArrayList;
  * Difficulty: Easy
  * Contributors: Admin
  * <p>
- * Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+ * Design a stack that supports push, pop, top, and retrieving the minimum
+ * element in constant time.
  * <p>
  * push(x) -- Push element x onto stack.
  * pop() -- Removes the element on top of the stack.
@@ -46,7 +47,7 @@ public class e155_MiniStack {
     private int minIndex = -1;
 
     public void push(int x) {
-        list.add(new Integer(x));
+        list.add(x);
         if (-1 == minIndex) {
             minIndex = 0;
         } else if (x < list.get(minIndex)) {
@@ -66,8 +67,10 @@ public class e155_MiniStack {
     }
 
     public int getMin() {
-        if (list.isEmpty()) return -1;
-        if (-1 != minIndex) return list.get(minIndex);
+        if (list.isEmpty())
+            return -1;
+        if (-1 != minIndex)
+            return list.get(minIndex);
 
         // find new min element
         minIndex = 0;
@@ -104,4 +107,3 @@ public class e155_MiniStack {
  * int param_3 = obj.top();
  * int param_4 = obj.getMin();
  */
-
