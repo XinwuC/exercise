@@ -1,9 +1,11 @@
 package basic;
 
-
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
+import javax.naming.spi.DirStateFactory.Result;
 
 public class TreeNode {
     public int val;
@@ -43,7 +45,41 @@ public class TreeNode {
         return root;
     }
 
+    /**
+     * serialize a tree with layers
+     * 
+     * @param root
+     * @return
+     */
     public static List<Integer> serialize(TreeNode root) {
-        return null;
+        List<Integer> result = new ArrayList<>();
+        if (root == null) {
+            result.add(null);
+            return result;
+        }
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        result.add(root.val);
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.remove();
+            if (node.left == null)
+                result.add(null);
+            else {
+                result.add(node.left.val);
+                queue.add(node.left);
+            }
+            if (node.right == null)
+                result.add(null);
+            else {
+                result.add(node.right.val);
+                queue.add(node.right);
+            }
+
+        }
+        for (int i = result.size() - 1; i > 0 && result.get(i) == null; --i) {
+            result.remove(i);
+        }
+        return result;
     }
 }
