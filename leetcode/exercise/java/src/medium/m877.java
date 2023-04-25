@@ -30,29 +30,6 @@ import java.util.Arrays;
  * 
  */
 public class m877 {
-    private int stoneGame(int[] piles, int i, int j, int[][] dp) {
-        if (i >= j)
-            return 0;
-        if (dp[i][j] != 0)
-            return dp[i][j];
-
-        if (j - i == 1) {
-            dp[i][j] = Math.abs(piles[i] - piles[j]);
-            return dp[i][j];
-        }
-
-        // alice leftmost, i -> bob leftmost, i+1 or rightmost j
-        int bob = Math.min(stoneGame(piles, i + 2, j, dp) - piles[i + 1],
-                stoneGame(piles, i + 1, j - 1, dp) - piles[j]);
-        int alice = piles[i] + bob;
-        // rightmost, j -> leftmost,i, i+1..j-1 or rightmsot j-1, i..j-2
-        bob = Math.min(stoneGame(piles, i + 1, j - 1, dp) - piles[i], stoneGame(piles, i, j - 2, dp) - piles[j - 1]);
-        alice = Math.max(alice, piles[j] + bob);
-
-        dp[i][j] = alice;
-        return alice;
-    }
-
     private boolean solve(int[] piles, int i, int j, int alice, int bob, int[][] dp) {
         if (i >= j)
             return false;
@@ -81,7 +58,6 @@ public class m877 {
 
     public boolean stoneGame(int[] piles) {
         int[][] dp = new int[piles.length][piles.length];
-        // return stoneGame(piles, 0, piles.length - 1, dp) > 0;
         return solve(piles, 0, piles.length - 1, 0, 0, dp);
     }
 
