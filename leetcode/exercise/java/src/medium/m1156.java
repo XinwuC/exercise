@@ -54,7 +54,7 @@ public class m1156 {
                     preCount = swappable[repeatChar - 'a'] > 2 ? currCount + 1 : currCount;
                 } else {
                     // cannot connect to next substring, reset loop to process curr char
-                    if (text.charAt(i - 2) == text.charAt(i))
+                    if (i - 2 >= 0 && text.charAt(i - 2) == text.charAt(i))
                         preCount = swappable[text.charAt(i - 2) - 'a'] > 2 ? 2 : 1;
                     else
                         preCount = 0;
