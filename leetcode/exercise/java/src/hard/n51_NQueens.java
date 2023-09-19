@@ -3,10 +3,6 @@ package hard;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Queue;
-import java.util.Stack;
-
-import basic.Utils;
 
 /**
  * https://leetcode.com/problems/n-queens/
