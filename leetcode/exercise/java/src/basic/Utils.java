@@ -11,10 +11,20 @@ public class Utils {
         return Arrays.stream(arr).map(List::of).collect(Collectors.toList());
     }
 
-    public static <T> T[][] twoDListToArray(List<List<T>> list) {
-        @SuppressWarnings("unchecked")
-        T[][] array = (T[][]) Array.newInstance(T.getClass(), list.size(), list.get(0).size());
-     
-        return array;
+    // public static <T> T[][] twoDListToArray(List<List<T>> list) {
+    //     // @SuppressWarnings("unchecked")
+    //     // T[][] array = (T[][]) Array.newInstance(T.getClass(), list.size(),
+    //     // list.get(0).size());
+
+    //     return list.stream().map(l -> l.toArray(T[]::new)).toArray(T[][]::new);
+    // }
+
+    public static Integer[][] twoDListToArray(List<List<Integer>> list) {
+        // @SuppressWarnings("unchecked")
+        // T[][] array = (T[][]) Array.newInstance(T.getClass(), list.size(),
+        // list.get(0).size());
+
+        return list.stream().map(l -> l.toArray(Integer[]::new)).toArray(Integer[][]::new);
     }
+
 }
