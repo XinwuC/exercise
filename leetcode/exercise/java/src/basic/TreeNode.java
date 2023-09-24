@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 public class TreeNode {
     public int val;
     public TreeNode left;
@@ -14,6 +12,12 @@ public class TreeNode {
 
     public TreeNode(int x) {
         val = x;
+    }
+
+    public TreeNode(int x, TreeNode l, TreeNode r) {
+        val = x;
+        left = l;
+        right = r;
     }
 
     public static TreeNode deserialize(Integer[] nodes) {
