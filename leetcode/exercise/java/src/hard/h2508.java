@@ -1,6 +1,5 @@
 package hard;
 
-import java.nio.file.FileAlreadyExistsException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +52,7 @@ public class h2508 {
             if (odd_count == 2) {
                 if (!hasEdge(p[0], p[1], edgeMap))
                     return true;
-                while(!bridge.isEmpty()) {
+                while (!bridge.isEmpty()) {
                     int b = bridge.pop();
                     if (!hasEdge(p[0], b, edgeMap) && !hasEdge(p[1], b, edgeMap))
                         return true;

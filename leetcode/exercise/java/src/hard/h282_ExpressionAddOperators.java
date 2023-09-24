@@ -39,7 +39,7 @@ public class h282_ExpressionAddOperators {
 
         public void addSolution(long value, String solution, boolean multiplyOnly) {
             if (!allSolutions.contains(solution)) {
-                Long key = new Long(value);
+                Long key = Long.valueOf(value); 
                 if (!fullSolutionMap.containsKey(key))
                     fullSolutionMap.put(key, new ArrayList<>());
                 fullSolutionMap.get(key).add(solution);
@@ -62,7 +62,7 @@ public class h282_ExpressionAddOperators {
 
         fillAnswerMatrix(num, matrix, 0, length - 1);
 
-        Long targetInt = new Long(target);
+        Long targetInt = Long.valueOf(target);
 
         if (matrix[0][length - 1].fullSolutionMap.containsKey(targetInt)) {
             for (String solution : matrix[0][length - 1].fullSolutionMap.get(targetInt)) {
