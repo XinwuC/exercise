@@ -2,30 +2,58 @@ package medium;
 
 import basic.TreeNode;
 
+/**
+ * 687. Longest Univalue Path
+ * https://leetcode.com/problems/longest-univalue-path/description/
+ * 
+ * Given the root of a binary tree, return the length of the longest path, where
+ * each node in the path has the same value. This path may or may not pass
+ * through the root.
+ * 
+ * The length of the path between two nodes is represented by the number of
+ * edges between them.
+ * 
+ * Example 1:
+ * 
+ * Input: root = [5,4,5,1,1,null,5]
+ * Output: 2
+ * Explanation: The shown image shows that the longest path of the same value
+ * (i.e. 5).
+ *
+ * Example 2:
+ * 
+ * Input: root = [1,4,5,4,4,null,5]
+ * Output: 2
+ * Explanation: The shown image shows that the longest path of the same value
+ * (i.e. 4).
+ * 
+ * Constraints:
+ * 
+ * The number of nodes in the tree is in the range [0, 104].
+ * -1000 <= Node.val <= 1000
+ * The depth of the tree will not exceed 1000.
+ */
 public class m0687_LongestUnivaluePath {
-    public int longestValuePath(TreeNode root, int val) {
-        if (root == null || root.val != val)
+    int max = 0;
+
+    public int longestValuePath(TreeNode root, int parent_val) {
+        if (root == null)
             return 0;
 
-        int left_path = 0, right_path = 0;
-        if (root.left != null && root.left.val == val)
-            left_path = 1 + longestValuePath(root.left, val);
-        if (root.right != null && root.right.val == val)
-            right_path = 1 + longestValuePath(root.right, val);
+        int left_path = longestValuePath(root.left, root.val);
+        int right_path = longestValuePath(root.right, root.val);
 
-        return Math.max(left_path, right_path);
+        max = Math.max(max, left_path + right_path);
+
+        return root.val == parent_val ? 1 + Math.max(left_path, right_path) : 0;
     }
 
     public int longestUnivaluePath(TreeNode root) {
         if (root == null)
             return 0;
-        int self_path = 0;
-        if (root.left != null && root.left.val == root.val)
-            self_path += 1 + longestValuePath(root.left, root.val);
-        if (root.right != null && root.right.val == root.val)
-            self_path += 1 + longestValuePath(root.right, root.val);
-        return Math.max(self_path,
-                Math.max(longestUnivaluePath(root.left), longestUnivaluePath(root.right)));
+        max = 0;
+        longestValuePath(root, 2000);
+        return max;
     }
 
     public static void main(String[] args) {
