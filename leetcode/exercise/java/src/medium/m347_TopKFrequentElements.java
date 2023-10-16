@@ -41,17 +41,18 @@ public class m347_TopKFrequentElements {
         for (int n : nums) {
             mapCounter.merge(n, 1, Integer::sum);
         }
-        PriorityQueue<Map.Entry<Integer, Integer>> queue = new PriorityQueue<>(mapCounter.size(), new Comparator<Map.Entry<Integer, Integer>>() {
-            public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
-                if (o1.getValue() == o2.getValue())
-                    return 0;
-                else if (o1.getValue() < o2.getValue())
-                    return 1;
-                else
-                    return -1;
-            }
-        });
-        for (Map.Entry entry : mapCounter.entrySet()) {
+        PriorityQueue<Map.Entry<Integer, Integer>> queue = new PriorityQueue<>(mapCounter.size(),
+                new Comparator<Map.Entry<Integer, Integer>>() {
+                    public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
+                        if (o1.getValue() == o2.getValue())
+                            return 0;
+                        else if (o1.getValue() < o2.getValue())
+                            return 1;
+                        else
+                            return -1;
+                    }
+                });
+        for (Map.Entry<Integer, Integer> entry : mapCounter.entrySet()) {
             queue.add(entry);
         }
         int[] result = new int[k];

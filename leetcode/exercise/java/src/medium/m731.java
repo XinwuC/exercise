@@ -1,10 +1,5 @@
 package medium;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.lang.model.util.ElementScanner14;
-
 /**
  * 731. My Calendar II
  * https://leetcode.com/problems/my-calendar-ii/

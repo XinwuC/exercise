@@ -1,10 +1,7 @@
 package hard;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Map.Entry;
 
 /**
  * 315. Count of Smaller Numbers After Self

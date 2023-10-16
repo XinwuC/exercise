@@ -42,15 +42,15 @@ public class m398_RandomPickIndex {
 
     public m398_RandomPickIndex(int[] nums) {
         for (int idx = 0; idx < nums.length; ++idx) {
-            Integer key = new Integer(nums[idx]);
+            Integer key = Integer.valueOf(nums[idx]);
             List<Integer> indexList = index.containsKey(key) ? index.get(key) : new ArrayList<>();
-            indexList.add(new Integer(idx));
+            indexList.add(Integer.valueOf(idx));
             index.putIfAbsent(key, indexList);
         }
     }
 
     public int pick(int target) {
-        Integer key = new Integer(target);
+        Integer key = Integer.valueOf(target);
         if (index.containsKey(key)) {
             List<Integer> indexList = index.get(key);
             return indexList.get(random.nextInt(indexList.size())).intValue();

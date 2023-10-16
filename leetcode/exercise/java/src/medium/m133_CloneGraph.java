@@ -46,41 +46,42 @@ public class m133_CloneGraph {
 		class Pair {
 			UndirectedGraphNode _clone;
 			UndirectedGraphNode _reference;
-			
+
 			public Pair(UndirectedGraphNode clone, UndirectedGraphNode reference) {
 				_clone = clone;
 				_reference = reference;
 			}
 		}
-		
-        if (null == node) return null;
-        
-        HashMap<Integer, UndirectedGraphNode> _cloned = new HashMap<Integer, UndirectedGraphNode>();
-        UndirectedGraphNode root = new UndirectedGraphNode(node.label);
-    	_cloned.put(new Integer(root.label), root);
-    	
-        Queue<Pair> _unfinished = new LinkedList<Pair>();
-        _unfinished.add(new Pair(root, node));
-        
-        Pair current = _unfinished.poll();
-        while(null != current) {
-        	for(UndirectedGraphNode neighbour: current._reference.neighbors) {
-        		Integer key = new Integer(neighbour.label);
-                if (_cloned.containsKey(key)) {
-                    current._clone.neighbors.add(_cloned.get(key));
-                } else {
-                	UndirectedGraphNode cloneNeighbour = new UndirectedGraphNode(neighbour.label);
-                	_cloned.put(new Integer(cloneNeighbour.label), cloneNeighbour);
-                	current._clone.neighbors.add(cloneNeighbour);
-                	_unfinished.add(new Pair(cloneNeighbour, neighbour));
-                }
-            }
-        	
-        	current = _unfinished.poll();
-        }
-       
-        return root;
-    }
+
+		if (null == node)
+			return null;
+
+		HashMap<Integer, UndirectedGraphNode> _cloned = new HashMap<Integer, UndirectedGraphNode>();
+		UndirectedGraphNode root = new UndirectedGraphNode(node.label);
+		_cloned.put(Integer.valueOf(root.label), root);
+
+		Queue<Pair> _unfinished = new LinkedList<Pair>();
+		_unfinished.add(new Pair(root, node));
+
+		Pair current = _unfinished.poll();
+		while (null != current) {
+			for (UndirectedGraphNode neighbour : current._reference.neighbors) {
+				Integer key = Integer.valueOf(neighbour.label);
+				if (_cloned.containsKey(key)) {
+					current._clone.neighbors.add(_cloned.get(key));
+				} else {
+					UndirectedGraphNode cloneNeighbour = new UndirectedGraphNode(neighbour.label);
+					_cloned.put(Integer.valueOf(cloneNeighbour.label), cloneNeighbour);
+					current._clone.neighbors.add(cloneNeighbour);
+					_unfinished.add(new Pair(cloneNeighbour, neighbour));
+				}
+			}
+
+			current = _unfinished.poll();
+		}
+
+		return root;
+	}
 
 	public static void main(String[] args) {
 		int input = 1348820612;

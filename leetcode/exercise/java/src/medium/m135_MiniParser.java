@@ -60,7 +60,7 @@ class NestedInteger {
 
     // Constructor initializes a single integer.
     public NestedInteger(int value) {
-        this.value = new Integer(value);
+        this.value = Integer.valueOf(value);
     }
 
     // @return true if this NestedInteger holds a single integer, rather than a nested list.
@@ -76,7 +76,7 @@ class NestedInteger {
 
     // Set this NestedInteger to hold a single integer.
     public void setInteger(int value) {
-        this.value = new Integer(value);
+        this.value = Integer.valueOf(value);
     }
 
     // Set this NestedInteger to hold a nested list and adds a nested integer to it.

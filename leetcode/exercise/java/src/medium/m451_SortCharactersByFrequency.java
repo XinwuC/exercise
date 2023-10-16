@@ -81,7 +81,7 @@ public class m451_SortCharactersByFrequency {
     public String frequencySort(String s) {
         HashMap<Character, Char> hash = new HashMap<>();
         for(char c: s.toCharArray()) {
-            Character key = new Character(c);
+            Character key = Character.valueOf(c);
             Char ch = hash.containsKey(key) ? hash.get(key) : new Char(c);
             ch.incremental();
             hash.putIfAbsent(key, ch);

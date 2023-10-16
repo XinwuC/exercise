@@ -1,9 +1,6 @@
 package medium;
 
 import java.util.Arrays;
-import java.util.Stack;
-
-import javax.swing.text.html.HTMLDocument.RunElement;
 
 /**
  * 1073. Adding Two Negabinary Numbers

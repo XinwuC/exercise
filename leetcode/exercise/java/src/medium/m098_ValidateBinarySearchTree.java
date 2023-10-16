@@ -72,9 +72,6 @@ public class m098_ValidateBinarySearchTree {
     private SubTree validate(TreeNode root) {
         SubTree result = new SubTree(root);
 
-        TreeNode leftLeft = root;
-        TreeNode leftRight = root;
-
         if (null != root.left) {
             SubTree leftTree = validate(root.left);
             // left tree is not validate

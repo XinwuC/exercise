@@ -1,7 +1,5 @@
 package medium;
 
-import java.util.Arrays;
-
 /**
  * 443. String Compression
  * https://leetcode.com/problems/string-compression/description/

@@ -80,7 +80,7 @@ public class h460_LFUCache {
     }
 
     public int get(int key) {
-        Integer oKey = new Integer(key);
+        Integer oKey = Integer.valueOf(key);
         LFUCacheEntry entry = _hashmap.get(oKey);
 
         // not found
@@ -97,7 +97,7 @@ public class h460_LFUCache {
     public void set(int key, int value) {
         if (_capacity < 1) return;
 
-        LFUCacheEntry entry = _hashmap.get(new Integer(key));
+        LFUCacheEntry entry = _hashmap.get(Integer.valueOf(key));
         if (null == entry) {
             // new entry
             entry = new LFUCacheEntry(key, value);
@@ -188,7 +188,7 @@ public class h460_LFUCache {
     }
 
     public static void main(String[] args) {
-        //test();
+        test();
 
         test1();
 

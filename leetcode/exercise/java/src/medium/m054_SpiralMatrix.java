@@ -49,15 +49,15 @@ public class m054_SpiralMatrix {
         int colCount = endCol - startCol + 1;
 
         for (int i = startCol; i <= endCol; ++i)
-            result.add(new Integer(matrix[startRow][i]));
+            result.add(Integer.valueOf(matrix[startRow][i]));
         if (rowCount > 1) {
             for (int i = startRow + 1; i <= endRow; ++i)
-                result.add(new Integer(matrix[i][endCol]));
+                result.add(Integer.valueOf(matrix[i][endCol]));
             if (colCount > 1) {
                 for (int i = endCol - 1; i >= startCol; --i)
-                    result.add(new Integer(matrix[endRow][i]));
+                    result.add(Integer.valueOf(matrix[endRow][i]));
                 for (int i = endRow - 1; i > startRow; --i)
-                    result.add(new Integer(matrix[i][startCol]));
+                    result.add(Integer.valueOf(matrix[i][startCol]));
             }
         }
 

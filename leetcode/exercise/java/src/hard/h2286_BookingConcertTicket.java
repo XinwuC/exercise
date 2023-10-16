@@ -1,5 +1,7 @@
 package hard;
 
+import java.util.Arrays;
+
 /**
  * https://leetcode.com/problems/booking-concert-tickets-in-groups/
  * 
@@ -132,9 +134,11 @@ public class h2286_BookingConcertTicket {
             switch (ops[i]) {
                 case "gather":
                     int[] r = test.gather(input[i][0], input[i][1]);
+                    System.out.println(Arrays.toString(r));
                     break;
                 case "scatter":
                     boolean b = test.scatter(input[i][0], input[i][1]);
+                    System.out.println(b);
                     break;
             }
         }

@@ -1,5 +1,7 @@
 package hard;
 
+import basic.Utils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -109,9 +111,9 @@ public class n51_NQueens {
     public static void test(int n, String[][] expected) {
         n51_NQueens queen = new n51_NQueens();
         List<List<String>> output = queen.solveNQueens(n);
-        // String[][] os = Utils.twoDListToArray(output);
-        // boolean pass = Arrays.deepEquals(output.toArray(), expected);
-        // System.out.format("%s: n=%d, %s\n", pass, n, Arrays.deepToString(os));
+        String[][] os = Utils.twoDStringListToArray(output);
+        boolean pass = Arrays.deepEquals(output.toArray(), expected);
+        System.out.format("%s: n=%d, %s\n", pass, n, Arrays.deepToString(os));
     }
 
     public static void main(String[] args) {

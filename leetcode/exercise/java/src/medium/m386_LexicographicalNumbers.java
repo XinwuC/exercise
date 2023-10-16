@@ -27,12 +27,12 @@ public class m386_LexicographicalNumbers {
         List<Integer> result = new ArrayList<>();
 
         long current = 1;
-        result.add(new Integer((int) current));
+        result.add(Integer.valueOf((int) current));
         while (result.size() < n) {
             // add much 0 as possible
             for (long next = current * 10; next <= n && result.size() < n; next = current * 10) {
                 current = next;
-                result.add(new Integer((int) current));
+                result.add(Integer.valueOf((int) current));
             }
             // adjust if current == n
             if (current == n) current = current / 10;
@@ -40,11 +40,11 @@ public class m386_LexicographicalNumbers {
             for (long next = current + 1; next <= n && result.size() < n; next = current + 1) {
                 if (0 != next % 10) {
                     current = next;
-                    result.add(new Integer((int) current));
+                    result.add(Integer.valueOf((int) current));
                 } else {
                     while (0 == next % 10) next /= 10;
                     current = next;
-                    result.add(new Integer((int) current));
+                    result.add(Integer.valueOf((int) current));
                     break;
                 }
             }
